@@ -7,8 +7,3 @@ How to deploy dumbflix-backend :
 - Copy .env.example to .env
 - Change config/config.json to your database
 - Deploy dumbflix-backend with port 5000
-
-How to deploy dumbflix-frontend :
-- Install node.js 10.x
-- Change url for dumbflix-backend in src/config/api.js
-- Deploy dumbflix-frontend with port 3000
