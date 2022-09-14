@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    container_name: dumbflix-backend
+    depends_on:
+      - db
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+    command: ./wait-for-it.sh db:3306 -s -t 0 -- ./start-server.sh
+  db:
+    image: mysql:8
+    container_name: dumbflix-database
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'dumbflix'
+      MYSQL_USER: 'dumbflix'
+      MYSQL_PASSWORD: 'dumbflix'
+      MYSQL_ROOT_PASSWORD: 'P4ssword!'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - database:/var/lib/mysql
+
+volumes:
+  database:
+
