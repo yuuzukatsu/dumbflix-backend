@@ -6,8 +6,8 @@ def ip = "116.193.191.120"
 def username = "kelompok1"
 def imagename = "dumbflix-backend"
 def sshkeyid = "app-server"
-
-
+def telegramapi = "5729352114:AAHCaP5L-_Jjn7mGkxoPlvCnbGQEBXixwiM"
+def telegramid = "-707481763"
 pipeline {
     agent any
 
@@ -56,5 +56,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Send Success Notification') {
+            steps {
+                sh """
+                    curl -X POST 'https://api.telegram.org/bot${telegramapi}/sendMessage' -d \
+		    'chat_id=${telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                """
+            }
+        }
+
     }
 }
