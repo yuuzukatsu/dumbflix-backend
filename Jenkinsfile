@@ -58,17 +58,19 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                sh """
-                        ssh -l ${username} ${ip} <<pwd
-                        docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
-                        docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
-                        docker image push ${dockerusername}/${imagename}:latest
-                        docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
-                        docker image rm ${dockerusername}/${imagename}:latest
-                        docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
-                        docker image rm ${imagename}:${env.BUILD_ID}
-                        pwd
-                """
+                sshagent(credentials: ["${sshkeyid}"]) {
+			sh """
+				ssh -l ${username} ${ip} <<pwd
+				docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
+				docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
+				docker image push ${dockerusername}/${imagename}:latest
+				docker image push ${dockerusername}/${imagename}:${env.BUILD_ID}
+				docker image rm ${dockerusername}/${imagename}:latest
+				docker image rm ${dockerusername}/${imagename}:${env.BUILD_ID}
+				docker image rm ${imagename}:${env.BUILD_ID}
+				pwd
+			"""
+		}
             }
         }
 
