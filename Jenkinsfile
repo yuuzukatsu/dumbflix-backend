@@ -7,8 +7,6 @@ def username = "kelompok1"
 def imagename = "dumbflix-backend"
 def dockerusername = "yuuzukatsu"
 def sshkeyid = "app-server"
-def telegramapi = "5729352114:AAHCaP5L-_Jjn7mGkxoPlvCnbGQEBXixwiM"
-def telegramid = "-707481763"
 
 pipeline {
     agent any
@@ -60,7 +58,7 @@ pipeline {
             steps {
                 sshagent(credentials: ["${sshkeyid}"]) {
 			sh """
-				ssh -l ${username} ${ip} <<pwd
+				ssh -l ${dockerusername} ${ip} <<pwd
 				docker tag ${imagename}:${env.BUILD_ID} ${dockerusername}/${imagename}:${env.BUILD_ID}
 				docker tag ${imagename}:latest ${dockerusername}/${imagename}:latest
 				docker image push ${dockerusername}/${imagename}:latest
@@ -78,8 +76,8 @@ pipeline {
         stage('Send Success Notification') {
             steps {
                 sh """
-                    curl -X POST 'https://api.telegram.org/bot${telegramapi}/sendMessage' -d \
-		    'chat_id=${telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
+                    curl -X POST 'https://api.telegram.org/bot${env.telegramapi}/sendMessage' -d \
+		    'chat_id=${env.telegramid}&text=Build ID #${env.BUILD_ID} Backend Pipeline Successful!'
                 """
             }
         }
